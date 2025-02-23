@@ -1,8 +1,11 @@
 package org.example;
 
 import java.io.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class FileDataSource implements DataSource {
+    private static final Logger logger = Logger.getLogger(FileDataSource.class.getName());
     private String filename;
 
     public FileDataSource(String filename) {
@@ -14,7 +17,8 @@ public class FileDataSource implements DataSource {
         try (FileWriter writer = new FileWriter(filename)) {
             writer.write(data);
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error writing data to file", e);
+            throw new RuntimeException("Failed to write data to file", e);
         }
     }
 
@@ -27,7 +31,8 @@ public class FileDataSource implements DataSource {
                 data.append(line);
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            logger.log(Level.SEVERE, "Error reading data from file", e);
+            throw new RuntimeException("Failed to read data from file", e);
         }
         return data.toString();
     }
